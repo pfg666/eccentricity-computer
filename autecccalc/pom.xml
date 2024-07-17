@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.pfg666</groupId>
+  <artifactId>autecccalc</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>autecccalc</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- Dependency versions in alphabetical order -->
+    <automatalib.version>0.11.0</automatalib.version>
+    <jcommander.version>1.82</jcommander.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>${jcommander.version}</version>
+    </dependency>
+    
+    
+      <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-api</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-commons-util</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-core</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-serialization-core</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-serialization-dot</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.automatalib</groupId>
+      <artifactId>automata-util</artifactId>
+      <version>${automatalib.version}</version>
+    </dependency>
+  </dependencies>
+</project>

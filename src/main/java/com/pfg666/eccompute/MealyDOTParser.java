@@ -1,4 +1,4 @@
-package com.pfg666.autecccalc;
+package com.pfg666.eccompute;
 
 import java.io.IOException;
 import java.io.InputStream;

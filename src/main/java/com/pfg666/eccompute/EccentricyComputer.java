@@ -1,4 +1,4 @@
-package com.pfg666.autecccalc;
+package com.pfg666.eccompute;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -11,10 +11,10 @@ import net.automatalib.word.Word;
 
 import java.util.ArrayList;
 
-public class EccentricyCalculator<I,O,S> {
+public class EccentricyComputer<I,O,S> {
 	private List<S> states;
 	
-	public EccentricyCalculator() {
+	public EccentricyComputer() {
 		
 	}
 	

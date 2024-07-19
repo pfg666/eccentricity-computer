@@ -7,18 +7,20 @@ EXP_LOCATION="experiments"
 JAVA_PATH="/bin/java"
 
 def run_experiment(sut_model, happy_flow, java_path=JAVA_PATH):
-    print(f"running {sut_model} {happy_flow}")
+    #print(f"running {sut_model} {happy_flow}")
     arguments = [java_path, "-jar", JAR_LOCATION, sut_model, happy_flow]
     result = subprocess.run(arguments, capture_output=True, text=True)
-    print(result.stdout)
+    return result.stdout.splitlines()[0].split()[2]
 
 def run_protocol_role_experiments(protocol, role, folder_path):
-    # List all files in the given folder
     files = os.listdir(folder_path)
-    sut_models = sorted([f"{folder_path}/{model}" for model in files if model.endswith("dot")])
-    happy_flow=f"{folder_path}/happy_flows"
+    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot")])
+    happy_flow=os.path.join(folder_path,"happy_flows")
+    print(f"Eccentricity experiments for protocol: {protocol}, role: {role}")
     for sut_model in sut_models:
-        run_experiment(sut_model, happy_flow)
+        eccentricity = run_experiment(sut_model, happy_flow)
+        sut = os.path.basename(sut_model)[0:-4]
+        print(f"SUT: {sut} eccentricity: {eccentricity}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility for launching eccentricity experiments on using files from the experiments folder.')

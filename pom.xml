@@ -11,7 +11,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-
+	
+	<!-- Plugin versions -->
+	<jar-plugin.version>3.4.2</jar-plugin.version>
+	<dependency-plugin.version>3.7.1</dependency-plugin.version>
+	
     <!-- Dependency versions in alphabetical order -->
     <automatalib.version>0.11.0</automatalib.version>
     <jcommander.version>1.82</jcommander.version>
@@ -62,4 +66,40 @@
       <version>${automatalib.version}</version>
     </dependency>
   </dependencies>
+  <build>
+	<plugins>
+		<!-- Dependency analysis -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Build an executable JAR -->
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${jar-plugin.version}</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <classpathPrefix>lib/</classpathPrefix>
+              <mainClass>com.pfg666.eccompute.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+	</plugins>	
+  </build>
 </project>

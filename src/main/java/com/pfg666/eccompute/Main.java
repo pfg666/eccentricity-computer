@@ -21,7 +21,7 @@ public class Main {
 			List<Word<String>> happyFlows = testParser.readTests(args[1]);
 			InputModelData<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> sutData = mealyParser.readModel(new FileInputStream(args[0]));
 			Integer eccentricity = EccentricyComputer.computeFromSequences(happyFlows, sutData.model, sutData.alphabet);
-			System.out.println("Computed eccentricity: " + eccentricity);
+			System.out.println("Computed eccentricity with happy flows: " + eccentricity);
 		}
 	}
 }

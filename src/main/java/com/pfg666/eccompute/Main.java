@@ -5,23 +5,43 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import com.beust.jcommander.JCommander;
+
 import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.serialization.InputModelData;
 import net.automatalib.serialization.InputModelDeserializer;
 import net.automatalib.serialization.dot.DOTParsers;
+import net.automatalib.util.automaton.Automata;
 import net.automatalib.word.Word;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
 		InputModelDeserializer<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> mealyParser = DOTParsers.mealy();
-		TestParser testParser = new TestParser();
-		if (args.length != 2) {
-			System.out.println("Usage: ecccompute sut_model happy_flows");
+		Config config = new Config();
+		JCommander commander = JCommander.newBuilder()
+                .allowParameterOverwriting(true)
+                .programName("eccompute")
+                .addObject(config)
+                .build();
+		if (args.length == 0) {
+			commander.usage();
 		} else {
-			List<Word<String>> happyFlows = testParser.readTests(args[1]);
-			InputModelData<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> sutData = mealyParser.readModel(new FileInputStream(args[0]));
-			Integer eccentricity = EccentricyComputer.computeFromSequences(happyFlows, sutData.model, sutData.alphabet);
-			System.out.println("Computed eccentricity with happy flows: " + eccentricity);
+			commander.parse(args);
+			String specification = config.getSpecification();
+			InputModelData<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> sutData = mealyParser.readModel(new FileInputStream(config.getModel()));
+			if (config.getSpecificationType() == SpecificationType.HAPPY_FLOWS) {
+				TestParser testParser = new TestParser();
+				List<Word<String>> happyFlows = testParser.readTests(specification);
+				Integer eccentricity = EccentricyComputer.computeFromSequences(happyFlows, sutData.model, sutData.alphabet);
+				System.out.println("Computed eccentricity with happy flows: " + eccentricity);
+			} else if (config.getSpecificationType() == SpecificationType.MEALY_MACHINE){
+				InputModelData<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> specData = mealyParser.readModel(new FileInputStream(config.getSpecification()));
+				List<Word<@Nullable String>> specAccessSequences = Automata.stateCover(specData.model, specData.alphabet);
+				Integer eccentricity = EccentricyComputer.computeFromSequences(specAccessSequences, sutData.model, sutData.alphabet);
+				System.out.println("Computed eccentricity with Mealy machine specification: " + eccentricity);
+			} else {
+				throw new RuntimeException("Not supported specification type " + config.getSpecificationType());
+			}
 		}
 	}
 }

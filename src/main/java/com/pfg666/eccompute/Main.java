@@ -1,18 +1,21 @@
 package com.pfg666.eccompute;
 
 import java.io.FileInputStream;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import com.beust.jcommander.JCommander;
 
+import net.automatalib.automaton.fsa.CompactDFA;
 import net.automatalib.automaton.transducer.CompactMealy;
 import net.automatalib.serialization.InputModelData;
 import net.automatalib.serialization.InputModelDeserializer;
 import net.automatalib.serialization.dot.DOTParsers;
 import net.automatalib.util.automaton.Automata;
 import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -39,6 +42,22 @@ public class Main {
 				List<Word<@Nullable String>> specAccessSequences = Automata.stateCover(specData.model, specData.alphabet);
 				Integer eccentricity = EccentricyComputer.computeFromSequences(specAccessSequences, sutData.model, sutData.alphabet);
 				System.out.println("Computed eccentricity with Mealy machine specification: " + eccentricity);
+			} else if (config.getSpecificationType() == SpecificationType.GENERAL_BUG_PATTERN){
+				InputModelDeserializer<@Nullable String, CompactDFA<@Nullable String>> dfaParser = DOTParsers.dfa();
+				InputModelData<@Nullable String, CompactDFA<@Nullable String>> specData = dfaParser.readModel(new FileInputStream(config.getSpecification()));
+				List<Word<@Nullable String>> specAccessSequences = Automata.stateCover(specData.model, specData.alphabet);
+				LinkedHashSet<Word<@Nullable String>> inputAccessSequences = new LinkedHashSet<Word<String>>();
+				for (Word<@Nullable String> aSeq : specAccessSequences) {
+					WordBuilder<String> builder = new WordBuilder<>();
+					for (String sym : aSeq) {
+						if (sym.startsWith("I_")) {
+							builder.add(sym.substring(2));
+						}
+					}
+					inputAccessSequences.add(builder.toWord());
+				}
+				Integer eccentricity = EccentricyComputer.computeFromSequences(specAccessSequences, sutData.model, sutData.alphabet);
+				System.out.println("Computed eccentricity with general bug pattern: " + eccentricity);
 			} else {
 				throw new RuntimeException("Not supported specification type " + config.getSpecificationType());
 			}

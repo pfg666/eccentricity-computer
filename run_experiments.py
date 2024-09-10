@@ -33,7 +33,7 @@ def run_experiment(sut_model, happy_flow):
 
 def run_protocol_role_experiments(protocol, role, folder_path):
     files = os.listdir(folder_path)
-    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot")])
+    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot") and model not in ["general_bug_pattern.dot"]])
     happy_flow=os.path.join(folder_path, HAPPY_FLOWS)
     print(f"Eccentricity experiments for protocol: {protocol}, role: {role}")
     for sut_model in sut_models:

@@ -23,10 +23,11 @@ init -> chrsa [label="ClientHelloRSA"]
 init -> chdhe [label="ClientHelloDHE"]
 init -> disconnect [label="ClientKeyExchange"]
 
+
 chrsa -> cke [label="ClientKeyExchange"]
 chrsa -> ccert [label="ClientCertificate"]
 chdhe -> cke [label="ClientKeyExchange"]
-chdhe -> ccert [label="ClientCertificate"]
+chdhe -> ccert [label="ClientCertificate"] 
 ccert -> cke [label="ClientKeyExchange"]
 
 cke -> certver [label="ClientCertificateVerify"]

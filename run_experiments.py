@@ -37,7 +37,8 @@ class ExperimentRunner:
             arguments.extend(["-t", "DFA_BASIS", "-s", os.path.join(spec_folder, 'dfa_basis.dot')])
 
         arguments.extend(self.__added_args)
-        #print(" ".join(arguments))
+        if (self.__verbose):
+            print(" ".join(arguments))
         result = subprocess.run(arguments, capture_output=True, text=True)
         lines = result.stdout.splitlines()
         #print(lines)
@@ -70,10 +71,11 @@ if __name__ == '__main__':
     parser.add_argument('-r', "--roles", required=False, nargs="+", default=["server"],  help="What roles to consider.")
     parser.add_argument('-s', "--specification_type", type=str, required=True, choices=[DFA_BASIS, HAPPY_FLOWS],  help="What type of specification to use")
     parser.add_argument('-a', "--additional_arguments", required=False, nargs="+", default=[], help="Additional arguments")
-    parser.add_argument('-v', "--verbose", required=False, type=bool, default=False,  help="Include more output (e.g., access sequences)")
+    parser.add_argument('-v', "--verbose", required=False, action="store_true",  help="Include more output (e.g., access sequences)")
     args = parser.parse_args()
 
     for protocol in args.protocols:
         for role in args.roles:
             exp_folder_path=os.path.join(EXP_LOCATION, protocol,role)
-            run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
+            if (os.path.exists(exp_folder_path)):
+                run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))

@@ -4,14 +4,15 @@ import argparse
 import shutil
 import csv
 
-JAR_LOCATION=os.path.join("target","eccompute-1.0-SNAPSHOT.jar")
-EXP_LOCATION="experiments"
-HAPPY_FLOWS="happy_flows"
+JAR_LOCATION = os.path.join("target","eccompute-1.0-SNAPSHOT.jar")
+EXP_LOCATION = "experiments"
+HAPPY_FLOWS = "happy_flows"
+DFA_BASIS = "dfa_basis"
 global java_path
 
 class ExperimentResult:
-    def __init__(self, library:str, ecc:int) -> None:
-        self.library, self.ecc = library, ecc
+    def __init__(self, model:str, ecc:int) -> None:
+        self.model, self.ecc = model, ecc
 
 class ExperimentGroupResult:
     def __init__(self, protocol:str, role:str, spec:str, expResults:list):
@@ -22,22 +23,32 @@ class NoEccentricityFoundException(Exception):
     """Eccentricity could not be extracted from STDOUT."""
     pass
 
+class ExperimentRunner:
+    def __init__(self, spec_type, added_args):
+        self.__added_args = added_args
+        self.__spec_type = spec_type
+    
+    def run_experiment(self, sut_model, spec_folder):
+        arguments = [java_path, "-jar", JAR_LOCATION, "-m", sut_model]
+        if self.__spec_type == HAPPY_FLOWS:
+            arguments.extend(["-t", "HAPPY_FLOWS", "-s", os.path.join(spec_folder, 'happy_flows')])
+        elif self.__spec_type == DFA_BASIS:
+            arguments.extend(["-t", "DFA_BASIS", "-s", os.path.join(spec_folder, 'dfa_basis.dot')])
 
-def run_experiment(sut_model, happy_flow):
-    arguments = [java_path, "-jar", JAR_LOCATION, "-m", sut_model, "-s", happy_flow]
-    result = subprocess.run(arguments, capture_output=True, text=True)
-    for line in result.stdout.splitlines():
-        if "eccentricity" in line:
-            return int(line.split(":")[1].strip())
-    raise NoEccentricityFoundException
+        arguments.extend(self.__added_args)
+        print(" ".join(arguments))
+        result = subprocess.run(arguments, capture_output=True, text=True)
+        for line in result.stdout.splitlines():
+            if "eccentricity" in line:
+                return int(line.split(":")[1].strip())
+        raise NoEccentricityFoundException
 
-def run_protocol_role_experiments(protocol, role, folder_path):
+def run_protocol_role_experiments(protocol, role, folder_path, runner:ExperimentRunner):
     files = os.listdir(folder_path)
-    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot") and model not in ["general_bug_pattern.dot"]])
-    happy_flow=os.path.join(folder_path, HAPPY_FLOWS)
+    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot")])
     print(f"Eccentricity experiments for protocol: {protocol}, role: {role}")
     for sut_model in sut_models:
-        eccentricity = run_experiment(sut_model, happy_flow)
+        eccentricity = runner.run_experiment(sut_model, os.path.join(folder_path, "specification"))
         sut = os.path.basename(sut_model)[0:-4]
         print(f"SUT model: {sut} eccentricity: {eccentricity}")
 
@@ -52,9 +63,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility for launching eccentricity experiments on using files from the experiments folder.')
     parser.add_argument('-p', "--protocols", required=False, nargs="+", default=["dtls"],  help="What protocols to consider.")
     parser.add_argument('-r', "--roles", required=False, nargs="+", default=["server"],  help="What roles to consider.")
+    parser.add_argument('-s', "--specification_type", type=str, required=False, choices=[DFA_BASIS, HAPPY_FLOWS],  help="What type of specification to use")
+    parser.add_argument('-a', "--additional_arguments", required=False, nargs="+", default=[], help="Additional arguments")
     args = parser.parse_args()
 
     for protocol in args.protocols:
         for role in args.roles:
             exp_folder_path=os.path.join(EXP_LOCATION, protocol,role)
-            run_protocol_role_experiments(protocol, role, exp_folder_path)
+            run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments))

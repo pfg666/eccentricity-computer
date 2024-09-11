@@ -1,0 +1,33 @@
+# handhske RSA cert disabled
+ServerHelloRSA
+ServerCertificate
+ServerHelloDone
+ChangeCipherSpec
+Finished
+reset
+# handhske RSA cert req
+ServerHelloRSA
+ServerCertificate
+CertificateRequest
+ServerHelloDone
+ChangeCipherSpec
+Finished
+reset
+# handhske DHE cert disabled
+ServerHelloDHE
+ServerCertificate
+ServerKeyExchange
+ServerHelloDone
+ChangeCipherSpec
+Finished
+reset
+# handhske DHE cert req
+ServerHelloDHE
+ServerCertificate
+ServerKeyExchange
+CertificateRequest
+ServerHelloDone
+ChangeCipherSpec
+Finished
+# disconnect
+ServerKeyExchange

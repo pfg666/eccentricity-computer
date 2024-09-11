@@ -1,0 +1,44 @@
+# handshake RSA cert nreq
+ClientHelloRSA
+EmptyCertificate
+ClientKeyExchange
+ChangeCipherSpec
+Finished
+reset
+# handshake RSA cert req
+ClientHelloRSA
+ClientCertificate
+ClientKeyExchange
+ClientCertificateVerify
+ChangeCipherSpec
+Finished
+reset
+# handshake RSA cert disabled
+ClientHelloRSA
+ClientKeyExchange
+ChangeCipherSpec
+Finished
+reset
+# handshake DHE cert nreq
+ClientHelloDHE
+EmptyCertificate
+ClientKeyExchange
+ChangeCipherSpec
+Finished
+reset
+# handshake DHE cert req
+ClientHelloDHE
+ClientCertificate
+ClientKeyExchange
+ClientCertificateVerify
+ChangeCipherSpec
+Finished
+reset
+# handshake DHE cert disabled
+ClientHelloDHE
+ClientKeyExchange
+ChangeCipherSpec
+Finished
+reset
+# disconnect state
+ClientKeyExchange

@@ -1,0 +1,39 @@
+digraph G {
+    /*
+    
+      ClientHello                  -------->
+                                                      ServerHello
+                                                     Certificate*
+                                               ServerKeyExchange*
+                                              CertificateRequest*
+                                   <--------      ServerHelloDone
+      Certificate*
+      ClientKeyExchange
+      CertificateVerify*
+      [ChangeCipherSpec]
+      Finished                     -------->
+                                               [ChangeCipherSpec]
+                                   <--------             Finished
+      Application Data             <------->     Application Data
+      */
+label=""
+fin [shape="doublecircle"]
+init -> disconnect [label="ServerHelloDone"]
+init -> shrsa [label="ServerHelloRSA"]
+init -> shdhe [label="ServerHelloDHE"]
+shrsa -> rsacert [label="ServerCertificate"]
+    rsacert -> rsacertreq [label="CertificateRequest"]
+    rsacert -> shd [label="ServerHelloDone"]
+    rsacertreq -> shd [label="ServerHelloDone"]
+shdhe -> dhecert [label="ServerCertificate"]
+    dhecert -> dheske [label="ServerKeyExchange"]
+    dheske -> dhecertreq [label="CertificateRequest"]
+    dheske -> shd [label="ServerHelloDone"]
+    dhecertreq -> shd [label="ServerHelloDone"]
+shd -> ccs [label="ChangeCipherSpec"]
+ccs -> fin [label="Finished"]
+fin -> app [label="ApplicationData"]
+
+__start0 [label="" shape="none" width="0" height="0"];
+__start0 -> init;
+}

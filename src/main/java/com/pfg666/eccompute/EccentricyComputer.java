@@ -21,8 +21,8 @@ public class EccentricyComputer {
 	public static <I,O,S> Integer computeFromSequences(Collection<Word<I>> sequences, MealyMachine<S, I, ?, O> mealy, Collection<I> inputs) {
 		Set<S> states = new LinkedHashSet<>();
 		for (Word<I> sequence : sequences) {
-			if (inputs.containsAll(sequence.asList())) {
-				for (Word<I> prefix : sequence.prefixes(false)) {
+			for (Word<I> prefix : sequence.prefixes(false)) {
+				if (prefix.isEmpty() || inputs.contains(prefix.lastSymbol())) {
 					@Nullable
 					S state = mealy.getState(prefix);
 					if (state != null) {

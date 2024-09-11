@@ -1,0 +1,67 @@
+digraph G {
+__start0 [height="0", label="", shape="none", width="0"];
+__start0 -> s1;
+s1;
+s0;
+s2;
+s3;
+s4;
+s5;
+s6;
+s1 -> s5  [label="ApplicationData/Alert Fatal (Unexpected message) & ConnectionClosed
+ApplicationDataEmpty/Empty
+ChangeCipherSpec/Alert Fatal (Unexpected message) & ConnectionClosed
+Finished/ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerCertificate/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloDone/Alert Fatal (Unexpected message) & ConnectionClosed"];
+s1 -> s3  [label="ServerHelloRsa/Empty"];
+s0 -> s5  [label="ApplicationData/Alert Fatal (Unexpected message) & ConnectionClosed
+ApplicationDataEmpty/Alert Fatal (Unexpected message) & ConnectionClosed
+ChangeCipherSpec/Alert Fatal (Unexpected message) & ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerCertificate/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloDone/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloRsa/Alert Fatal (Unexpected message) & ConnectionClosed"];
+s0 -> s6  [label="Finished/ApplicationData"];
+s2 -> s5  [label="ApplicationData/Alert Fatal (Unexpected message) & ConnectionClosed
+ApplicationDataEmpty/Empty
+ChangeCipherSpec/Alert Fatal (Unexpected message) & ConnectionClosed
+Finished/ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerCertificate/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloRsa/Alert Fatal (Unexpected message) & ConnectionClosed"];
+s2 -> s4  [label="ServerHelloDone/HandshakeClientKeyExchangeChangeCipherSpec & Finished"];
+s3 -> s5  [label="ApplicationData/Alert Fatal (Unexpected message) & ConnectionClosed
+ApplicationDataEmpty/Empty
+ChangeCipherSpec/Alert Fatal (Unexpected message) & ConnectionClosed
+Finished/ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerHelloDone/ConnectionClosed
+ServerHelloRsa/Alert Fatal (Unexpected message) & ConnectionClosed"];
+s3 -> s2  [label="ServerCertificate/Empty"];
+s4 -> s5  [label="ApplicationData/Alert Fatal (Unexpected message) & ConnectionClosed
+ApplicationDataEmpty/Empty
+Finished/ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerCertificate/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloDone/Alert Fatal (Unexpected message) & ConnectionClosed
+ServerHelloRsa/Alert Fatal (Unexpected message) & ConnectionClosed"];
+s4 -> s0  [label="ChangeCipherSpec/Empty"];
+s5 -> s5  [label="ApplicationData/ConnectionClosed
+ApplicationDataEmpty/ConnectionClosed
+ChangeCipherSpec/ConnectionClosed
+Finished/ConnectionClosed
+HeartbeatRequest/ConnectionClosed
+ServerCertificate/ConnectionClosed
+ServerHelloDone/ConnectionClosed
+ServerHelloRsa/ConnectionClosed"];
+s6 -> s6  [label="ApplicationData/Empty
+ApplicationDataEmpty/Empty"];
+s6 -> s5  [label="ChangeCipherSpec/Alert Fatal (Unexpected message)Alert Warning (Close notify) & ConnectionClosed
+Finished/Alert Fatal (Unexpected message)Alert Warning (Close notify) & ConnectionClosed
+HeartbeatRequest/Alert Warning (Close notify) & ConnectionClosed
+ServerCertificate/Alert Fatal (Unexpected message)Alert Warning (Close notify) & ConnectionClosed
+ServerHelloDone/Alert Fatal (Unexpected message)Alert Warning (Close notify) & ConnectionClosed
+ServerHelloRsa/Alert Fatal (Unexpected message)Alert Warning (Close notify) & ConnectionClosed"];
+}

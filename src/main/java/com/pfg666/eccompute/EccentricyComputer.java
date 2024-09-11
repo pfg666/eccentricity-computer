@@ -1,7 +1,9 @@
 package com.pfg666.eccompute;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -11,41 +13,53 @@ import com.pfg666.eccompute.BFSTraverser.SearchState;
 
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 
 public class EccentricyComputer {
 	
 	public EccentricyComputer() {
 		
 	}
-	
-	public static <I,O,S> Integer computeFromSequences(Collection<Word<I>> sequences, MealyMachine<S, I, ?, O> mealy, Collection<I> inputs) {
-		Set<S> states = new LinkedHashSet<>();
+
+	public static <I,O,S> EccentricityComputerResult computeFromSequences(Collection<Word<I>> sequences, MealyMachine<S, I, ?, O> mealy, Collection<I> inputs) {
+		Map<S,Word<I>> states = new LinkedHashMap<>();
 		for (Word<I> sequence : sequences) {
-			for (Word<I> prefix : sequence.prefixes(false)) {
-				if (prefix.isEmpty() || inputs.contains(prefix.lastSymbol())) {
-					@Nullable
-					S state = mealy.getState(prefix);
-					if (state != null) {
-						states.add(state);
-					} else {
-						break;
-					}
+			WordBuilder<I> builder = new WordBuilder<>();
+			for (I input : sequence) {
+				builder.toWord();
+				if (inputs.contains(input)) {
+					builder.append(input);
+				}
+			}
+			for (Word<I> prefix : builder.toWord().prefixes(false)) {
+				@Nullable
+				S state = mealy.getState(prefix);
+				if (state != null) {
+					states.put(state, prefix);
+				} else {
+					break;
 				}
 			}
 		}
-		return compute(states, mealy, inputs);
+		EccentricityComputerResult result = compute(states, mealy, inputs);
+		return result;
 	}
 	
-	public static <I,O,S> Integer compute(Collection<S> initialStates, MealyMachine<S, I, ?, O> mealy, Collection<I> inputs) {
+	public static <I,O,S> EccentricityComputerResult compute(Map<S,Word<I>> initialStates, MealyMachine<S, I, ?, O> mealy, Collection<I> inputs) {
 		EccentricityStateVisitor<I,S> visitor = new EccentricityStateVisitor<>(mealy.getStates());
-		BFSTraverser<I,S> traverser = new BFSTraverser<I,S>(mealy, initialStates, visitor);
+		BFSTraverser<I,S> traverser = new BFSTraverser<I,S>(mealy, initialStates.keySet(), visitor);
 		traverser.traverse(inputs);
-		return visitor.getEccentricity();
+		S closestSpecState = visitor.getSearchState().getRoot().getState();
+//		S furthestSutState = visitor.getSearchState().getState();
+//		Integer eccentricity = visitor.getEccentricity();
+		return new EccentricityComputerResult( visitor.getEccentricity(), initialStates.get(closestSpecState).concat(visitor.getSearchState().getSuffix()), initialStates.get(closestSpecState));
 	}
 	
 	private static class EccentricityStateVisitor<I,S> implements BFSStateVisitor<I,S> {
 		private LinkedHashSet<S> targetStates;
+		private SearchState<I,S> searchState;
 		private Integer eccentricity;
+		private S furthestState;
 
 		public EccentricityStateVisitor(Collection<S> targetStates) {
 			this.targetStates = new LinkedHashSet<S>();
@@ -56,15 +70,28 @@ public class EccentricyComputer {
 		public boolean visit(SearchState<I,S> state) {
 			targetStates.remove(state.getState());
 			if (targetStates.isEmpty()) {
+				this.searchState = state;
 				eccentricity = state.getDepth();
+				furthestState = state.getState();
 				return false;
 			}
 			return true;
 		}
 		
+		public SearchState<I,S> getSearchState() {
+			return searchState;
+		}
+		
+		public S getFurthestState() {
+			return furthestState;
+		}
+		
 		public Integer getEccentricity() {
 			return eccentricity;
 		}
+	}
+	
+	static record EccentricityComputerResult(Integer eccentricity, Word<?> furthestSutStateASeq, Word<?> closestSpecStateASeq) {
 	}
 
 }

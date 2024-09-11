@@ -90,6 +90,14 @@ public class BFSTraverser<I,S> {
         public SearchState<I,S> getParent() {
             return parent;
         }
+        
+        public SearchState<I,S> getRoot() {
+        	if (parent == null) {
+        		return this;
+        	} else {
+        		return getParent().getRoot();
+        	}
+        }
 
     }
 }

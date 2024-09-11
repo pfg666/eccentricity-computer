@@ -24,9 +24,10 @@ class NoEccentricityFoundException(Exception):
     pass
 
 class ExperimentRunner:
-    def __init__(self, spec_type, added_args):
+    def __init__(self, spec_type, added_args, verbose):
         self.__added_args = added_args
         self.__spec_type = spec_type
+        self.__verbose = verbose
     
     def run_experiment(self, sut_model, spec_folder):
         arguments = [java_path, "-jar", JAR_LOCATION, "-m", sut_model]
@@ -36,12 +37,16 @@ class ExperimentRunner:
             arguments.extend(["-t", "DFA_BASIS", "-s", os.path.join(spec_folder, 'dfa_basis.dot')])
 
         arguments.extend(self.__added_args)
-        print(" ".join(arguments))
+        #print(" ".join(arguments))
         result = subprocess.run(arguments, capture_output=True, text=True)
-        for line in result.stdout.splitlines():
-            if "eccentricity" in line:
-                return int(line.split(":")[1].strip())
-        raise NoEccentricityFoundException
+        lines = result.stdout.splitlines()
+        #print(lines)
+        if len(lines) >= 2 and "eccentricity" in lines[-1]:
+            if (self.__verbose):
+                print(lines[-2])
+            return int(lines[-1].split(":")[1].strip())
+        else: 
+            raise NoEccentricityFoundException
 
 def run_protocol_role_experiments(protocol, role, folder_path, runner:ExperimentRunner):
     files = os.listdir(folder_path)
@@ -63,11 +68,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Utility for launching eccentricity experiments on using files from the experiments folder.')
     parser.add_argument('-p', "--protocols", required=False, nargs="+", default=["dtls"],  help="What protocols to consider.")
     parser.add_argument('-r', "--roles", required=False, nargs="+", default=["server"],  help="What roles to consider.")
-    parser.add_argument('-s', "--specification_type", type=str, required=False, choices=[DFA_BASIS, HAPPY_FLOWS],  help="What type of specification to use")
+    parser.add_argument('-s', "--specification_type", type=str, required=True, choices=[DFA_BASIS, HAPPY_FLOWS],  help="What type of specification to use")
     parser.add_argument('-a', "--additional_arguments", required=False, nargs="+", default=[], help="Additional arguments")
+    parser.add_argument('-v', "--verbose", required=False, type=bool, default=False,  help="Include more output (e.g., access sequences)")
     args = parser.parse_args()
 
     for protocol in args.protocols:
         for role in args.roles:
             exp_folder_path=os.path.join(EXP_LOCATION, protocol,role)
-            run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments))
+            run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))

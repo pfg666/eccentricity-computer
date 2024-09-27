@@ -22,7 +22,7 @@ public class EccentricyComputerTest extends TestCase {
 	public void testComputeFromSequences() throws IOException{
 		StateMachine stateMachine = parseStateMachine(MBEDTLS_SERVER_DOT);
 		List<Word<String>> stateCover = Automata.stateCover(stateMachine.mealyMachine, stateMachine.alphabet);
-		int ecc = EccentricyComputer.computeFromSequences(stateCover, stateMachine.mealyMachine, stateMachine.alphabet).eccentricity();
+		int ecc = EccentricyComputer.computeFromSequences(stateCover, stateMachine.mealyMachine, stateMachine.alphabet).getEccentricity();
 		Assert.assertEquals(0, ecc);
 	}
 	

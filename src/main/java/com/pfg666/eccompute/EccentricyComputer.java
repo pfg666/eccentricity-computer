@@ -52,7 +52,11 @@ public class EccentricyComputer {
 		S closestSpecState = visitor.getSearchState().getRoot().getState();
 //		S furthestSutState = visitor.getSearchState().getState();
 //		Integer eccentricity = visitor.getEccentricity();
-		return new EccentricityComputerResult( visitor.getEccentricity(), initialStates.get(closestSpecState).concat(visitor.getSearchState().getSuffix()), initialStates.get(closestSpecState));
+		return new EccentricityComputerResult( visitor.getEccentricity(), 
+				inputs,
+				initialStates.keySet(),
+				mealy,
+				initialStates.get(closestSpecState).concat(visitor.getSearchState().getSuffix()), initialStates.get(closestSpecState));
 	}
 	
 	private static class EccentricityStateVisitor<I,S> implements BFSStateVisitor<I,S> {
@@ -91,7 +95,6 @@ public class EccentricyComputer {
 		}
 	}
 	
-	static record EccentricityComputerResult(Integer eccentricity, Word<?> furthestSutStateASeq, Word<?> closestSpecStateASeq) {
-	}
-
+//	static record EccentricityComputerResult(Integer eccentricity, Word<?> furthestSutStateASeq, Word<?> closestSpecStateASeq) {
+//	}
 }

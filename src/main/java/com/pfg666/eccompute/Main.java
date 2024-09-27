@@ -11,7 +11,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import com.beust.jcommander.JCommander;
-import com.pfg666.eccompute.EccentricyComputer.EccentricityComputerResult;
 
 import net.automatalib.automaton.fsa.CompactDFA;
 import net.automatalib.automaton.transducer.CompactMealy;
@@ -39,8 +38,7 @@ public class Main {
 			InputModelData<@Nullable String, CompactMealy<@Nullable String, @Nullable String>> sutData = mealyParser.readModel(new FileInputStream(config.getModel()));
 			Collection<Word<@Nullable String>> specAccessSequences = computeSpecAccessSequences(config, sutData);
 			EccentricityComputerResult result = EccentricyComputer.computeFromSequences(specAccessSequences, sutData.model, sutData.alphabet);
-			System.out.println(result);
-			System.out.println("Computed eccentricity with " + config.getSpecificationType() + ": " + result.eccentricity());
+			System.out.println(result.toString());
 		}
 	}
 	

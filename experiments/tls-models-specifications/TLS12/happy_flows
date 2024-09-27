@@ -1,0 +1,9 @@
+# Handshake with renegotiation, ending with connection closure
+ClientHello
+RSAClientKeyExchange
+ChangeCipherSpec
+Finished
+ClientHello
+ChangeCipherSpec
+Finished
+AlertWarningCloseNotify

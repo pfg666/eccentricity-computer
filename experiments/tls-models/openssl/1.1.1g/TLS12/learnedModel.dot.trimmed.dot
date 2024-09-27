@@ -1,0 +1,101 @@
+digraph g {
+__start0 [label="", shape="none"];
+s0 [label="0", shape="circle"];
+s1 [label="1", shape="circle"];
+s2 [label="2", shape="circle"];
+s3 [label="3", shape="circle"];
+s4 [label="4", shape="circle"];
+s5 [label="5", shape="circle"];
+s6 [label="6", shape="circle"];
+s7 [label="7", shape="circle"];
+s0 -> s1  [label="AlertWarningCloseNotify / AlertFatalUnexpectedMessage|ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ChangeCipherSpec / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+Finished / AlertFatalUnexpectedMessage|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s0 -> s2  [label="ClientHello / ServerHello|Certificate|ServerHelloDone"];
+s1 -> s1  [label="AlertWarningCloseNotify / ConnectionClosed
+ApplicationData / ConnectionClosed
+ChangeCipherSpec / ConnectionClosed
+ClientHello / ConnectionClosed
+DhclientKeyExchange / ConnectionClosed
+DheserverKeyExchange / ConnectionClosed
+EcdhclientKeyExchange / ConnectionClosed
+Finished / ConnectionClosed
+RsaclientKeyExchange / ConnectionClosed
+ServerHello / ConnectionClosed
+ServerHelloDone / ConnectionClosed"];
+s2 -> s1  [label="AlertWarningCloseNotify / ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ChangeCipherSpec / AlertFatalUnexpectedMessage|ConnectionClosed
+ClientHello / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalDecryptError|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalDecodeError|ConnectionClosed
+Finished / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s2 -> s3  [label="RsaclientKeyExchange / -"];
+s3 -> s1  [label="AlertWarningCloseNotify / ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ClientHello / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+Finished / AlertFatalUnexpectedMessage|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s3 -> s4  [label="ChangeCipherSpec / -"];
+s4 -> s1  [label="AlertWarningCloseNotify / AlertFatalUnexpectedMessage|ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ChangeCipherSpec / AlertFatalUnexpectedMessage|ConnectionClosed
+ClientHello / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s4 -> s5  [label="Finished / ChangeCipherSpec|Finished"];
+s5 -> s1  [label="AlertWarningCloseNotify / ConnectionClosed
+ApplicationData / Application|ConnectionClosed
+ChangeCipherSpec / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+Finished / AlertFatalUnexpectedMessage|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s5 -> s7  [label="ClientHello / ServerHello|ChangeCipherSpec|Finished"];
+s6 -> s1  [label="AlertWarningCloseNotify / AlertFatalUnexpectedMessage|ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ChangeCipherSpec / AlertFatalUnexpectedMessage|ConnectionClosed
+ClientHello / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+Finished / AlertFatalDecryptError|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s7 -> s1  [label="AlertWarningCloseNotify / ConnectionClosed
+ApplicationData / AlertFatalUnexpectedMessage|ConnectionClosed
+ClientHello / AlertFatalUnexpectedMessage|ConnectionClosed
+DhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+DheserverKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+EcdhclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+Finished / AlertFatalUnexpectedMessage|ConnectionClosed
+RsaclientKeyExchange / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHello / AlertFatalUnexpectedMessage|ConnectionClosed
+ServerHelloDone / AlertFatalUnexpectedMessage|ConnectionClosed"];
+s7 -> s6  [label="ChangeCipherSpec / -"];
+__start0 -> s0;
+"\n";
+}

@@ -46,8 +46,7 @@ class ExperimentRunner:
         result =  self.parse_result(lines)
         if result is None:
             print("Failed to find eccentricity")
-            #print(f"Command (as list): {arguments}")
-            print(f"Command: {" ".join(arguments)}")
+            print(f"Command: {' '.join(arguments)}")
             raise NoEccentricityFoundException
         else:
             return result

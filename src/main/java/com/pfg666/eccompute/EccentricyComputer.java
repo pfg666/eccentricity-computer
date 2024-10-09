@@ -1,5 +1,6 @@
 package com.pfg666.eccompute;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -42,6 +43,9 @@ public class EccentricyComputer {
 			}
 		}
 		EccentricityComputerResult result = compute(states, mealy, inputs);
+		Collection<Word<?>> seq = new ArrayList<>();
+		seq.addAll(sequences);
+		result.setSpecificationSequences(seq);
 		return result;
 	}
 	
@@ -50,8 +54,6 @@ public class EccentricyComputer {
 		BFSTraverser<I,S> traverser = new BFSTraverser<I,S>(mealy, initialStates.keySet(), visitor);
 		traverser.traverse(inputs);
 		S closestSpecState = visitor.getSearchState().getRoot().getState();
-//		S furthestSutState = visitor.getSearchState().getState();
-//		Integer eccentricity = visitor.getEccentricity();
 		return new EccentricityComputerResult( visitor.getEccentricity(), 
 				inputs,
 				initialStates.keySet(),

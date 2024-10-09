@@ -7,8 +7,5 @@ reset
 EDHOC_MESSAGE_2
 OSCORE_APP_MESSAGE
 reset
-# abort session
+# disconnected state
 EDHOC_ERROR_MESSAGE
-reset
-# disconnect
-EDHOC_MESSAGE_4

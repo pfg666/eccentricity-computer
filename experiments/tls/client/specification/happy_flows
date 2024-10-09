@@ -29,5 +29,5 @@ CertificateRequest
 ServerHelloDone
 ChangeCipherSpec
 Finished
-# disconnect
+# error state
 ServerKeyExchange

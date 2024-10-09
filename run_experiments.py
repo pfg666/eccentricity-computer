@@ -13,8 +13,22 @@ DFA_BASIS = "dfa_basis"
 global java_path
 
 class ExperimentResult:
-    def __init__(self, ecc:int, alpha_size:int, basis_size:int, sut_model_size:int) -> None:
+    def __init__(self, ecc:int = None, alpha_size:int = None, basis_size:int = None, sut_model_size:int = None) -> None:
         self.ecc, self.alpha_size, self.basis_size, self.sut_model_size = ecc, alpha_size, basis_size, sut_model_size
+        self.sut_desc = None
+        self.role = None
+        self.protocol = None
+        self.alpha_desc = "noinfo"
+    
+    def set_sut_desc(self, sut_desc:str):
+        self.sut_desc = sut_desc
+    
+    def add_info(self, protocol:str, role:str, sut_desc:str, alpha_desc:str = None):
+        self.protocol = protocol
+        self.role = role
+        self.sut_desc = sut_desc
+        if alpha_desc:
+            self.alpha_desc = alpha_desc
 
 class ExperimentGroupResult:
     def __init__(self, protocol:str, role:str, spec:str, expResults:list):
@@ -68,10 +82,24 @@ class ExperimentRunner:
                     sut_model_size = int(stat_val)
         if ecc is None:
             return None
-        return ExperimentResult(ecc, alpha_size, basis_size, sut_model_size)
+        return ExperimentResult(ecc=ecc, alpha_size=alpha_size, 
+                                basis_size=basis_size, 
+                                sut_model_size=sut_model_size)
+
+def extract_alpha_info(protocol, sut):
+    if protocol == "dtls":
+        parts = sut.split("_")[1:]
+        if parts[0] == "client" or parts[0] == "server":
+            parts = parts[1:]
+        return "_".join(parts)
+    if protocol == "tls":
+        parts = sut.split("_")
+        return parts[-1]
+    return "noinfo"
 
 
 def run_protocol_role_experiments(protocol, role, folder_path, runner:ExperimentRunner):
+    results = list()
     files = os.listdir(folder_path)
     sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot")])
     protocol_specification =  os.path.join(folder_path, "specification")
@@ -79,9 +107,13 @@ def run_protocol_role_experiments(protocol, role, folder_path, runner:Experiment
     for sut_model in sut_models:
         result = runner.run_experiment(sut_model, protocol_specification)
         sut = os.path.basename(sut_model)[0:-4]
-        print(f"SUT Model Name: {sut}, Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
+        print(f"SUT Model Name: {sut}, Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, Cover Size: {result.cover_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
+        result.add_info(protocol, role, sut, extract_alpha_info(protocol, sut))
+        results.append(result)
+    return results
 
 def run_tls_models_experiments(protocol, runner:ExperimentRunner):
+    results = list()
     protocol_specification = os.path.join(TLS_MODELS_SPEC_LOCATION, protocol)
     for sut in os.listdir(TLS_MODELS_LOCATION):
         sut_folder = os.path.join(TLS_MODELS_LOCATION, sut)
@@ -92,8 +124,22 @@ def run_tls_models_experiments(protocol, runner:ExperimentRunner):
             if os.path.exists(sut_model):
                 result = runner.run_experiment(sut_model, protocol_specification)
                 print(f"SUT: {sut}-{version}, Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
+                result.add_info(protocol, "server", f"{sut}-{version}")
+                results.append(result)
             #break
         #break
+    return results
+
+def export_to_csv(results: list, name: str):
+    with open(name, 'w') as csvfile:
+        writer = csv.writer(csvfile)
+#Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
+        writer.writerow(["Protocol", "Role", "Alphabet Info", "Alphabet Size", "SUT", "SUT Model Size", "Basic Size", "Eccentricity"])
+        for result in results:
+            writer.writerow([result.protocol, result.role, 
+                             result.alpha_desc, result.alpha_size, 
+                             result.sut_desc, result.sut_model_size, 
+                             result.basis_size, result.ecc])
 
 if __name__ == '__main__':
     java_path = shutil.which("java")
@@ -110,15 +156,21 @@ if __name__ == '__main__':
     parser.add_argument('-a', "--additional_arguments", required=False, nargs="+", default=[], help="Additional arguments")
     parser.add_argument('-v', "--verbose", required=False, action="store_true",  help="Include more output (e.g., access sequences)")
     parser.add_argument('-t', "--tls_models", required=False, action="store_true",  help="Run instead on Erwin Janssen's TLS models")
+    parser.add_argument('-e', "--export", required=False, type=str,  help="Export to CSV  format")
     args = parser.parse_args()
+    results = list()
 
     if not args.tls_models:
         for protocol in args.protocols:
             for role in args.roles:
                 exp_folder_path=os.path.join(EXP_LOCATION, protocol,role)
                 if (os.path.exists(exp_folder_path)):
-                    run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
+                    results = results + run_protocol_role_experiments(protocol, role, exp_folder_path, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
     else:
         for protocol in args.protocols:
             protocol = protocol.upper()
-            run_tls_models_experiments(protocol, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
+            results = results + run_tls_models_experiments(protocol, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
+    
+    if args.export and results:
+        results = sorted(results, key = lambda r: (r.protocol, r.role, r.alpha_desc, r.sut_desc))
+        export_to_csv(results, args.export)

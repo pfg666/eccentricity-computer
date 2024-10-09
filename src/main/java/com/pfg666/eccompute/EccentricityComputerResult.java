@@ -3,6 +3,7 @@ package com.pfg666.eccompute;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Set;
 
 import net.automatalib.automaton.transducer.MealyMachine;
 import net.automatalib.word.Word;
@@ -14,6 +15,7 @@ public class EccentricityComputerResult {
 	private MealyMachine<?, ?, ?, ?> sutMealy;
 	private Word<?> furthestSutStateASeq;
 	private Object closestSpecStateAseq;
+	private Collection<Word<?>> specificationSequences;
 
 	public EccentricityComputerResult(
 			Integer eccentricity,
@@ -28,6 +30,10 @@ public class EccentricityComputerResult {
 		this.sutMealy = sutMealy;
 		this.furthestSutStateASeq = furthestSutStateASeq;
 		this.closestSpecStateAseq = closestSpecStateASeq;
+	}
+	
+	public void setSpecificationSequences(Collection<Word<?>> specificationCover) {
+		this.specificationSequences = specificationCover;
 	}
 	
 	public Integer getEccentricity() {
@@ -45,6 +51,8 @@ public class EccentricityComputerResult {
 		pw.println();
 		pw.format("Alphabet Size (inputs): %d", inputs.size());
 		pw.println();
+		pw.format("Specification Size (sequences): %d", specificationSequences.size());
+		pw.println();
 		pw.format("Basis Size (states): %d", basisStates.size());
 		pw.println();
 		pw.format("SUT Model Size (states): %s", sutMealy.size());
@@ -52,6 +60,9 @@ public class EccentricityComputerResult {
 		pw.format("ASeq For Furthest SUT State From Basis: %s", furthestSutStateASeq.toString());
 		pw.println();
 		pw.format("ASeq For Closest Basis State to Furthest SUT State: %s", closestSpecStateAseq.toString());
+		pw.println();
+		pw.println("Specification sequences:");
+		specificationSequences.forEach(seq -> pw.println(seq));
 		return sw.toString();
 	}
 }

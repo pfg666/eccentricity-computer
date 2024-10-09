@@ -8,7 +8,7 @@ CH_OPEN
 CH_REQUEST_PTY
 CH_CLOSE
 reset
-# disconenct
+# error/disconnected state
 KEX30
 reset
 # rekey after each state post NEWKEYS

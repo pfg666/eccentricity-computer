@@ -107,7 +107,7 @@ def run_protocol_role_experiments(protocol, role, folder_path, runner:Experiment
     for sut_model in sut_models:
         result = runner.run_experiment(sut_model, protocol_specification)
         sut = os.path.basename(sut_model)[0:-4]
-        print(f"SUT Model Name: {sut}, Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, Cover Size: {result.cover_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
+        print(f"SUT Model Name: {sut}, Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
         result.add_info(protocol, role, sut, extract_alpha_info(protocol, sut))
         results.append(result)
     return results
@@ -133,8 +133,7 @@ def run_tls_models_experiments(protocol, runner:ExperimentRunner):
 def export_to_csv(results: list, name: str):
     with open(name, 'w') as csvfile:
         writer = csv.writer(csvfile)
-#Eccentricity: {result.ecc}, Alphabet Size: {result.alpha_size}, SUT Model Size: {result.sut_model_size}, Basis Size: {result.basis_size}")
-        writer.writerow(["Protocol", "Role", "Alphabet Info", "Alphabet Size", "SUT", "SUT Model Size", "Basic Size", "Eccentricity"])
+        writer.writerow(["Protocol", "Role", "Alphabet Info", "Alphabet Size", "SUT", "SUT Model Size", "Basis Size", "Eccentricity"])
         for result in results:
             writer.writerow([result.protocol, result.role, 
                              result.alpha_desc, result.alpha_size, 

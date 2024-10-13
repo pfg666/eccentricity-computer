@@ -100,8 +100,9 @@ def extract_alpha_info(protocol, sut):
 
 def run_protocol_role_experiments(protocol, role, folder_path, runner:ExperimentRunner):
     results = list()
-    files = os.listdir(folder_path)
-    sut_models = sorted([os.path.join(folder_path, model) for model in files if model.endswith("dot")])
+    model_path =  os.path.join(folder_path, "models")
+    files = os.listdir(model_path)
+    sut_models = sorted([os.path.join(model_path, model) for model in files if model.endswith("dot")])
     protocol_specification =  os.path.join(folder_path, "specification")
     print(f"Eccentricity experiments for protocol: {protocol}, role: {role}")
     for sut_model in sut_models:

@@ -70,7 +70,7 @@ To reproduce experiments by on the many TLS models learned by Janssen run:
 python3 run_experiments.py -p TLS12 -s happy_flows -t -e results_janssen.csv
 ```
 
-This will engage a separate mode of the script designed specifically eccentricity on Janssen's models.
+This will engage a separate mode of the script designed specifically for computing eccentricity using Janssen's models.
 Results are stored in `results_janssen.csv`.
 The `happy_flows` specification for TLS (1.2) is stored in `experiments/tls-models-specifications/TLS12/happy_flows`.
 Models are stored in `experiments/tls-models`, this time grouped first by implementation, then version, then protocol.

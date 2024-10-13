@@ -130,15 +130,25 @@ def run_tls_models_experiments(protocol, runner:ExperimentRunner):
         #break
     return results
 
+def trim_sut_desc(sut_desc:str, parts):
+    for p in parts:
+        sut_desc = sut_desc.replace(p, "")
+    sut_parts = sut_desc.split("_")
+    return "_".join([p for p in sut_parts if len(p) > 0])
+
+def formatstr(stat, length = 30):
+    return str(stat) + " " * (length - len(str(stat))) 
+
 def export_to_csv(results: list, name: str):
     with open(name, 'w') as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["Protocol", "Role", "Alphabet Info", "Alphabet Size", "SUT", "SUT Model Size", "Basis Size", "Eccentricity"])
+        writer.writerow(["Protocol", "Role", "SUT", "Alphabet Info", "Alphabet Size", "SUT Model Size", "Basis Size", "Eccentricity"])
         for result in results:
-            writer.writerow([result.protocol, result.role, 
-                             result.alpha_desc, result.alpha_size, 
-                             result.sut_desc, result.sut_model_size, 
-                             result.basis_size, result.ecc])
+            writer.writerow([formatstr(result.protocol, 5), formatstr(result.role, 10), 
+                             formatstr(trim_sut_desc(result.sut_desc, [result.role, result.alpha_desc])),
+                             formatstr(result.alpha_desc), formatstr(result.alpha_size, 4), 
+                             formatstr(result.sut_model_size, 4), 
+                             formatstr(result.basis_size, 4), formatstr(result.ecc, 4)])
 
 if __name__ == '__main__':
     java_path = shutil.which("java")
@@ -171,5 +181,5 @@ if __name__ == '__main__':
             results = results + run_tls_models_experiments(protocol, ExperimentRunner(args.specification_type, args.additional_arguments, args.verbose))
     
     if args.export and results:
-        results = sorted(results, key = lambda r: (r.protocol, r.role, r.alpha_desc, r.sut_desc))
+        results = sorted(results, key = lambda r: (r.protocol, r.role, r.sut_desc, r.alpha_desc))
         export_to_csv(results, args.export)

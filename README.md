@@ -1,4 +1,4 @@
-**EccentricityComptuter** (shortened **EccComp**() is a Java tool for computing eccentricity of a protocol SUT model relative to a specification, which is typically a set of happy flow sequences.
+**EccentricityComptuter** (shortened **EccComp**) is a Java tool for computing eccentricity of a protocol SUT model relative to a specification, which is typically a set of happy flow sequences.
 
 ## Walkthrough
 
@@ -72,7 +72,7 @@ python3 run_experiments.py -p TLS12 -s happy_flows -t -e results_janssen.csv
 
 This will engage a separate mode of the script designed specifically eccentricity on Janssen's models.
 Results are stored in `results_janssen.csv`.
-The `happy_flows` specification for TLS (1.2) is stored in `experiments/tls-models-specification/TLS12/specification/happy_flows`.
+The `happy_flows` specification for TLS (1.2) is stored in `experiments/tls-models-specifications/TLS12/happy_flows`.
 Models are stored in `experiments/tls-models`, this time grouped first by implementation, then version, then protocol.
 For example, the model for MbedTLS 2.10.0 located in the folder `experiments/tls-models/mbedtls/2.10.0/TLS12/`.
 The models were taken as is from the Janssen's [GitHub repository](https://github.com/tlsprint/models), commit 2166a77.
